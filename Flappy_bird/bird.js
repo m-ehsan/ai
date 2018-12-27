@@ -84,6 +84,10 @@ class Bird {
         }
     }
 
+    setLearningRate(rate) {
+        this.brain.setLearningRate(rate);
+    }
+
     mutate() {
         this.brain.mutate(mutate);
     }
@@ -94,7 +98,7 @@ class Bird {
 }
 
 function mutate(x) {
-    if (random(1) < 0.01) {
+    if (random(1) < mutationRate) {
         let offset = randomGaussian() * 0.5;
         let newX = x + offset;
         return newX;

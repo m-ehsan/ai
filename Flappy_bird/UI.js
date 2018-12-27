@@ -49,6 +49,8 @@ function handleMutationRateChange() {
         }
         if (mutationRate > 1)
             mutationRate = 1;
+
+        population.setLearningRate(mutationRate);
     }
     if (keyIsDown(DOWN_ARROW)) {
         if (keyIsDown(CONTROL) || keyIsDown(SHIFT)) {
@@ -60,6 +62,8 @@ function handleMutationRateChange() {
         }
         if (mutationRate < 0.001)
             mutationRate = 0.001;
+
+        population.setLearningRate(mutationRate);
     }
 }
 

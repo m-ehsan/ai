@@ -73,8 +73,8 @@ class Population {
 
         // populate new birds using natural selection
         for (let i = 1; i < this.birds.length; i++) {
-            // newBirds[i] = this.birds[this.bestBirdIndex].copy();
-            newBirds[i] = this.naturalSelect();
+            newBirds[i] = this.birds[this.bestBirdIndex].copy();
+            // newBirds[i] = this.naturalSelect();
         }
 
         this.birds = newBirds;
@@ -126,6 +126,12 @@ class Population {
         }
         index--;
         return this.birds[index].copy();
+    }
+
+    setLearningRate(rate) {
+        this.birds.forEach(bird => {
+            bird.setLearningRate(rate);
+        });
     }
 
     loadBrain(brain) {

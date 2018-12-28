@@ -93,6 +93,7 @@ function keyPressed() {
             break;
         case 70: // F key
             fastForward = !fastForward;
+            break;
         case 76: // L key
             loadBrain(goodBrainJSON);
             break;

@@ -110,6 +110,7 @@ function keyPressed() {
             break;
         case 68: // D key
             DownloadBestBrainJson();
+            break;
         case 76: // L key
             loadBrain(goodBrainJSON);
             break;

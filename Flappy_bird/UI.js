@@ -19,13 +19,14 @@ function displayUI() {
         textAlign(LEFT, TOP);
         textStyle(NORMAL);
         textSize(12);
-        text("[R] Reset", 5, height - 105);
-        text("[P] Pause", 5, height - 90);
-        text("[L] Load trained AI", 5, height - 75);
-        text("[S] Show all birds: " + ((showAllBirds) ? "true" : "false"), 5, height - 60);
-        text("[M] Mode: " + ((mode == 0) ? "free play" : "train AI"), 5, height - 45);
-        text("[+/-] Cycles per frame: " + cyclesPerFrame, 5, height - 30);
-        text("[up/down] Mutation rate: " + nf(mutationRate, 0, 3), 5, height - 15);
+        text("[R] Reset", 5, height - 120);
+        text("[P] Pause", 5, height - 105);
+        text("[L] Load trained AI", 5, height - 90);
+        text("[S] Show all birds: " + ((showAllBirds) ? "true" : "false"), 5, height - 75);
+        text("[M] Mode: " + ((mode == 0) ? "free play" : "train AI"), 5, height - 60);
+        text("[+/-] Cycles per frame: " + cyclesPerFrame, 5, height - 45);
+        text("[up/down] Mutation rate: " + nf(mutationRate, 0, 3), 5, height - 30);
+        text("[Left/Right] Population: " + populationSize, 5, height - 15);
     }
 }
 

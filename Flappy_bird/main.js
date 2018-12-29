@@ -108,6 +108,12 @@ function keyPressed() {
         case 32: // Space_bar key
             jump();
             break;
+        case 37: // Left-Arrow key
+            decreasePopulation();
+            break;
+        case 39: // Right-Arrow key
+            increasePopulation();
+            break;
         case 68: // D key
             DownloadBestBrainJson();
             break;
@@ -172,6 +178,18 @@ function loadBrain(brain) {
     population.loadBrain(newBrain);
     mode = 1;
     pipeCollection = new Pipes();
+}
+
+function decreasePopulation() {
+    populationSize -= 100;
+    if (populationSize < 100)
+        populationSize = 100;
+}
+
+function increasePopulation() {
+    populationSize += 100;
+    if (populationSize > 5000)
+        populationSize = 5000;
 }
 
 function windowResized() {

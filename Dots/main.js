@@ -4,7 +4,8 @@ var canvasWidth = 1200;
 var canvasHeight = 680;
 var fps = 60;
 var pause = false;
-var fastForward = false;
+var cyclesPerFrame = 1; // visual speed of the process
+var fastForward = false; // for skipping generations
 var showAllDots = true;
 
 // dots
@@ -50,6 +51,7 @@ function setup() {
 
 function draw() {
     handleMutationRateChange();
+    handleCyclePerFrameChange();
     background(250);
     drawObstacles();
     displayUI();
@@ -77,8 +79,10 @@ function draw() {
             population.mutateAllDots();
         }
         else {
-            if (!pause)
-                population.update();
+            if (!pause) {
+                for (let i = 0; i < cyclesPerFrame; i++)
+                    population.update();
+            }
             population.show();
         }
     }
@@ -88,6 +92,12 @@ function draw() {
 
 function keyPressed() {
     switch (keyCode) {
+        case 37: // Left-Arrow key
+            decreasePopulation();
+            break;
+        case 39: // Right-Arrow key
+            increasePopulation();
+            break;
         case 68: // D key
             DownloadBestBrainJson();
             break;
@@ -121,6 +131,7 @@ function drawObstacles() {
 
 function reset() {
     population = new Population(populationSize);
+    showAllDots = true;
 }
 
 function DownloadBestBrainJson() {
@@ -131,6 +142,18 @@ function loadBrain(brainJson) {
     population = new Population(populationSize);
     let brain = Brain.deserialize(brainJson);
     population.loadBrain(brain);
+}
+
+function decreasePopulation() {
+    populationSize -= 100;
+    if (populationSize < 100)
+        populationSize = 100;
+}
+
+function increasePopulation() {
+    populationSize += 100;
+    if (populationSize > 5000)
+        populationSize = 5000;
 }
 
 function windowResized() {

@@ -60,7 +60,7 @@ class Population {
         newDots[0] = this.dots[this.bestDotIndex].copy();
         newDots[0].isBest = true;
 
-        for (let i = 1; i < this.dots.length; i++) {
+        for (let i = 1; i < populationSize; i++) {
             newDots[i] = this.dots[this.bestDotIndex].copy(); // populate new dots with the best dot
         }
 

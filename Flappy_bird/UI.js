@@ -9,6 +9,7 @@ function displayUI() {
         textAlign(LEFT, TOP);
         textStyle(NORMAL);
         textSize(12);
+        text("[Space/Click] Jump!", 5, height - 30);
         text("[M] Mode: " + ((mode == 0) ? "free play" : "train AI"), 5, height - 15);
     }
     else {

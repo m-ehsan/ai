@@ -1,39 +1,18 @@
-function displayInfo() {
-    var lineNumber = 0;
-    var lineHeight = 15;
+function displayUI() {
+    let lineNumber = 0;
+    let lineHeight = 15;
 
     fill(20);
     noStroke();
     textSize(10);
     textAlign(LEFT, TOP);
-
     text("[-/+] Population: " + populationCount, 3, lineNumber++ * lineHeight + 3);
-    text("[up/down] Animation speed: " + animationSpeed, 3, lineNumber++ * lineHeight + 3);
-    text("[M] Mode: " + ((mode == 0) ? "Mutation" : "CrossOver"), 3, lineNumber++ * lineHeight + 3);
+    text("[Up/Down] Animation speed: " + animationSpeed, 3, lineNumber++ * lineHeight + 3);
+    text("[Right/Left] Resize panel", 3, lineNumber++ * lineHeight + 3);
+    text("[M] GA method: " + ((gaMode == 0) ? "mutation" : "crossover + mutation"), 3, lineNumber++ * lineHeight + 3);
     text("[Enter] Next step", 3, lineNumber++ * lineHeight + 3);
     text("[F] Fast forward: " + ((fastForward == 0) ? "Off" : "On"), 3, lineNumber++ * lineHeight + 3);
     text("[R] Reset", 3, lineNumber++ * lineHeight + 3);
-
-    if (mode != 0) {
-        var cmode = "";
-        switch (crossoverMode) {
-            case 0:
-                cmode = "2-best";
-                break;
-            case 1:
-                cmode = "2-worst";
-                break;
-            case 2:
-                cmode = "best & worst";
-                break;
-            case 3:
-                cmode = "random";
-                break;
-            default:
-                break;
-        }
-        text("[C] CrossOver Mode: " + cmode, 3, lineNumber++ * lineHeight + 3);
-    }
 
     textSize(30);
     textStyle(BOLD);
@@ -47,7 +26,7 @@ function displayFPS() {
     stroke(0);
     textSize(12);
     textAlign(LEFT, TOP);
-    var fps = Math.round(frameRate());
+    let fps = Math.round(frameRate());
     text(fps + " fps", 0, 0);
 }
 
@@ -108,8 +87,8 @@ function handlePopulationChange() {
             if (frameCount % 4 == 0)
                 populationCount--;
         }
-        if (populationCount < 1)
-            populationCount = 1;
+        if (populationCount < 2)
+            populationCount = 2;
     }
     if (keyIsDown(187)) {
         if (keyIsDown(CONTROL) || keyIsDown(SHIFT)) {
@@ -125,18 +104,18 @@ function handlePopulationChange() {
 }
 
 function calculatePosition(index) {
-    var x = leftColumnWidth + (index % columns) * blockWidth + blockPadding;
-    var y = topMargin + Math.floor(index / columns) * blockWidth * blocksHeightWidthRatio + blockPadding;
+    let x = leftColumnWidth + (index % columns) * blockWidth + blockPadding;
+    let y = topMargin + Math.floor(index / columns) * blockWidth * blocksHeightWidthRatio + blockPadding;
     return { x: x, y: y };
 }
 
 function calculateSmallBoardSize(total) {
-    var areaRatio = height / (width - leftColumnWidth);
+    let areaRatio = height / (width - leftColumnWidth);
 
     // calculate optimal number of columns
-    for (var i = 1; i <= total; i++) {
+    for (let i = 1; i <= total; i++) {
         rows = (Math.floor(total / i) + ((Math.floor(total % i) ? 1 : 0)));
-        var ratio = (rows * blocksHeightWidthRatio) / i;
+        let ratio = (rows * blocksHeightWidthRatio) / i;
         columns = i;
         if (ratio <= areaRatio) {
             break;
@@ -153,23 +132,18 @@ function calculateSmallBoardSize(total) {
 }
 
 function calculateBestBoardSize() {
-    if(mode == 0){
-        bestBoardSize = height / 1.7;
-    }
-    else {
-        bestBoardSize = height / 3;
-    }
+    bestBoardSize = height / 1.8;
     if (bestBoardSize > leftColumnWidth * 0.9) {
         bestBoardSize = leftColumnWidth * 0.9;
     }
 }
 
 function calculateBoardsPositions() {
-    var x = (leftColumnWidth - bestBoardSize) / 2;
-    var y = height / 2 - bestBoardSize / 2;
+    let x = (leftColumnWidth - bestBoardSize) / 2;
+    let y = height / 2 - bestBoardSize / 2;
     bestBoardPosition = { x: x, y: y };
-    var y1 = height / 2 - bestBoardSize * 1.15;
-    var y2 = height / 2 + bestBoardSize * 0.15;
+    let y1 = height / 2 - bestBoardSize * 1.15;
+    let y2 = height / 2 + bestBoardSize * 0.15;
     parent1Position = { x: x, y: y1 };
     parent2Position = { x: x, y: y2 };
 }

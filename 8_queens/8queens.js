@@ -4,17 +4,16 @@ var canvasWidth = 1200;
 var canvasHeight = 680;
 var fps = 60;
 var animationSpeed = 100;
-var mode = 0; // 0: mutation	1: crossOver
 var fastForward = false;
 var boards = [];
 var populationCount = 24;
 
 // UI
-var bgColor = 245;
 var boardImg;
 var queenImg;
 var leftColumnWidth = canvasWidth * 0.25;
 var bestBoardSize;
+var bestBoardPosition;
 var blocksHeightWidthRatio = 1.1;
 var columns;
 var rows;
@@ -29,11 +28,9 @@ var separatorThickness = 2.5;
 var step = 0;
 var nextStep = false;
 
-// Mutation alg
-var numberOfTriesOnEachBoard = 0;
-
-// Crossover alg
-var crossoverMode = 0; // 0: two best    1: two worst    2: best and worst    3: random
+// Genetic algorithm
+var gaMode = 0; // 0: only mutation    1: crossover + mutation
+var numberOfTriesOnEachBoard = 0; // number of extra tries to get better fitness from mutating a board (only affects mutation-only mode)
 
 function preload() {
 	boardImg = loadImage('img/board.png');
@@ -59,63 +56,54 @@ function draw() {
 		}
 	}
 
-	if (mode == 0) {
-		mutationProcess();
-	}
-	else {
-		crossoverProcess();
-	}
+	GAProcess(); // run genetic algorithm process
 
 	displayObjects();
-	displayInfo();
+	displayUI();
 	// displayFPS();
 }
 
 function displayObjects() {
-    // Draw background
-    background(bgColor);
+	// Draw background
+	background(245);
 
-    // Draw separator
-    strokeWeight(separatorThickness);
-    stroke(color(30));
-    line(leftColumnWidth, 0, leftColumnWidth, height);
+	// Draw separator
+	strokeWeight(separatorThickness);
+	stroke(color(30));
+	line(leftColumnWidth, 0, leftColumnWidth, height);
 
-    // Draw boards
-    if (!fastForward) {
-        boards.forEach(b => { b.display(); });
-    }
-    if (best1 != null) {
-        best1.display();
-    }
-    if (best2 != null) {
-        best2.display();
-    }
-    if (parent1 != null && parent2 != null) {
-        parent1.display();
-        parent2.display();
-    }
+	// Draw boards
+	if (!fastForward) {
+		boards.forEach(b => { b.display(); });
+	}
+	if (currentBoard != null) {
+		currentBoard.display();
+	}
+	if (previousBoard != null) {
+		previousBoard.display();
+	}
+	if (helperBoard1 != null) {
+		helperBoard1.display();
+	}
+	if (helperBoard2 != null) {
+		helperBoard2.display();
+	}
 }
 
 function finishAllAnimations() {
-    boards.forEach(b => { b.finishAnimation(); });
-    if (best1 != null) {
-        best1.finishAnimation();
-    }
-    if (best2 != null) {
-        best2.finishAnimation();
-    }
-    if (parent1 != null && parent2 != null) {
-        parent1.finishAnimation();
-        parent2.finishAnimation();
-    }
+	boards.forEach(b => { b.finishAnimation(); });
+	if (currentBoard != null) {
+		currentBoard.finishAnimation();
+	}
 }
 
 function reset() {
 	boards = [];
-	parent1 = null;
-	parent2 = null;
-	best2 = null;
-	best1 = null;
+	newTwoBests = null;
+	previousBoard = null;
+	currentBoard = null;
+	helperBoard1 = null;
+	helperBoard2 = null;
 	step = 0;
 	fastForward = false;
 }
@@ -129,56 +117,39 @@ function keyPressed() {
 		case 70: // F key
 			fastForward = !fastForward;
 			break;
-		case 82: // R key
-			reset();
-			break;
 		case 77: // M key
 			toggleMode();
 			break;
-		case 67: // C key
-			crossoverMode++;
-			if (crossoverMode > 3)
-				crossoverMode = 0;
+		case 82: // R key
+			reset();
 			break;
 		default:
 			break;
 	}
 }
 
-function toggleMode(){
-	if(mode == 0){
-		mode = 1;
-		leftColumnWidth = canvasWidth * 0.46;
-	}
-	else{
-		mode = 0;
-		leftColumnWidth = canvasWidth * 0.25;
-	}
-	reset();
-	updateBoards();
+function toggleMode() {
+	if (gaMode == 0)
+		gaMode = 1;
+	else
+		gaMode = 0;
+
+	finishAllAnimations();
+	removeHightlights();
+	findAndHighlightBestBoards(0);
 }
 
 function updateBoards() {
 	calculateBestBoardSize();
 	calculateSmallBoardSize(boards.length);
 	calculateBoardsPositions();
-	for (var i = 0; i < boards.length; i++) {
+	for (let i = 0; i < boards.length; i++) {
 		boards[i].size = smallBoardSize;
 		boards[i].position = calculatePosition(i);
 	}
-	if (best1 != null) {
-		best1.size = bestBoardSize;
-		best1.position = bestBoardPosition;
-	}
-	if (best2 != null) {
-		best1.size = bestBoardSize;
-		best1.position = bestBoardPosition;
-	}
-	if (parent1 != null && parent2 != null) {
-		parent1.size = bestBoardSize;
-		parent1.position = parent1Position;
-		parent2.size = bestBoardSize;
-		parent2.position = parent2Position;
+	if (currentBoard != null) {
+		currentBoard.size = bestBoardSize;
+		currentBoard.position = bestBoardPosition;
 	}
 }
 
@@ -195,7 +166,8 @@ function getRandomRow() {
 }
 
 function getRandomBoard() {
-	return new ChessBoard([getRandomRow(), getRandomRow(), getRandomRow(), getRandomRow(), getRandomRow(), getRandomRow(), getRandomRow(), getRandomRow()], 0);
+	let queens = [getRandomRow(), getRandomRow(), getRandomRow(), getRandomRow(), getRandomRow(), getRandomRow(), getRandomRow(), getRandomRow()];
+	return new ChessBoard(queens);
 }
 
 function timeToFrames(seconds) {

@@ -1,5 +1,5 @@
 class ChessBoard {
-	constructor(queens, crossOverAt) {
+	constructor(queens, crossOverAt = 0) {
 		this.queens = queens;
 		this.crossOverAt = crossOverAt;
 		this._displayCrossover = false;
@@ -71,10 +71,6 @@ class ChessBoard {
 
 	get opacity() {
 		return this._opacity;
-	}
-
-	get heuristic() {
-		return this.threatingPairsCount;
 	}
 
 	handleAnimations() {
@@ -171,7 +167,7 @@ class ChessBoard {
 		rect(this.x - this.borderThickness / 2, this.y - this.borderThickness / 2, this._size + this.borderThickness, this._size + this.borderThickness);
 
 		// draw queens
-		for (var i = 0; i < 8; i++) {
+		for (let i = 0; i < 8; i++) {
 			image(queenImg, this.x + i * this.cellWidth, this.y + this.queens[i] * this.cellWidth, this.cellWidth, this.cellWidth);
 		}
 
@@ -218,15 +214,15 @@ class ChessBoard {
 	}
 
 	calculateFitness() {
-		var threatingPairsCount = 0;
-		for (var i = 0; i < 7; i++) {
-			for (var j = i + 1; j < 8; j++) {
+		let threatingPairsCount = 0;
+		for (let i = 0; i < 7; i++) {
+			for (let j = i + 1; j < 8; j++) {
 				if ((this.queens[i] == this.queens[j]) || ((j - i) == Math.abs(this.queens[i] - this.queens[j]))) {
 					threatingPairsCount++;
 				}
 			}
 		}
 		this.threatingPairsCount = threatingPairsCount;
-		this.fitness = 1 / (threatingPairsCount + 1);
+		this.fitness = 1 / (this.threatingPairsCount + 1);
 	}
 }

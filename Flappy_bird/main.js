@@ -103,6 +103,17 @@ function mousePressed() {
     jump();
 }
 
+function touchStarted() {
+    if (touches[0].x >= 0 && touches[0].x <= width && touches[0].y >= 0 && touches[0].y <= height) {
+        jump();
+        return false;
+    }
+}
+
+function touchEnded() {
+    return false;
+}
+
 function keyPressed() {
     switch (keyCode) {
         case 32: // Space_bar key
@@ -174,7 +185,7 @@ function DownloadBestBrainJson() {
 
 function loadBrain(brain) {
     population = new Population(populationSize);
-    let newBrain = NeuralNetwork.deserialize(brain);
+    let newBrain = NeuralNetwork.prototype.deserialize(brain);
     population.loadBrain(newBrain);
     mode = 1;
     pipeCollection = new Pipes();

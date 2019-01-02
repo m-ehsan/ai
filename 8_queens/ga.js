@@ -77,15 +77,17 @@ function initialzePopulation() {
 			progress: 0,
 			delay: i * timeToFrames(1 / populationCount)
 		};
-		newBoard.size = smallBoardSize;
-		newBoard.opacity = 0;
+		newBoard.setSize(smallBoardSize);
+		newBoard.setOpacity(0);
 		newBoard.position = calculatePosition(i);
 		boards.push(newBoard);
 	}
 	findAndHighlightBestBoards(1);
 }
 
-function generateMutatedPopulation(delay = false) {
+function generateMutatedPopulation(delay) {
+	if (typeof delay != 'boolean')
+		delay = false;
 	if (currentBoard.fitness != 1) {
 		let extraDelayAmount = (delay) ? 0.6 : 0;
 		boards = [];
@@ -99,8 +101,8 @@ function generateMutatedPopulation(delay = false) {
 				progress: 0,
 				delay: i * timeToFrames(1 / populationCount) + timeToFrames(extraDelayAmount)
 			};
-			temp.size = smallBoardSize;
-			temp.opacity = 0;
+			temp.setSize(smallBoardSize);
+			temp.setOpacity(0);
 			temp.position = calculatePosition(i);
 			boards.push(temp);
 		}
@@ -108,7 +110,9 @@ function generateMutatedPopulation(delay = false) {
 	}
 }
 
-function findAndHighlightBestBoards(delay = 0) {
+function findAndHighlightBestBoards(delaySeconds) {
+	if (typeof delaySeconds != 'number')
+	delaySeconds = 0;
 	if (currentBoard != null)
 		if (currentBoard.fitness == 1)
 			return;
@@ -119,7 +123,7 @@ function findAndHighlightBestBoards(delay = 0) {
 		to: 1,
 		length: timeToFrames(0.5),
 		progress: 0,
-		delay: timeToFrames(delay)
+		delay: timeToFrames(delaySeconds)
 	};
 	if (gaMode == 1) {
 		newTwoBests[1].highlightAnimation = {
@@ -127,13 +131,13 @@ function findAndHighlightBestBoards(delay = 0) {
 			to: 1,
 			length: timeToFrames(0.5),
 			progress: 0,
-			delay: timeToFrames(delay)
+			delay: timeToFrames(delaySeconds)
 		};
 	}
 }
 
 function removeHightlights() {
-	newTwoBests.forEach(b => {
+	newTwoBests.forEach(function (b) {
 		b.highlightOpacity = 0;
 	});
 }
@@ -168,13 +172,15 @@ function mutateBoard(parent) {
 	return new ChessBoard(queens);
 }
 
-function animateBestBoard(board, fadeOut = false) {
+function animateBestBoard(board, fadeOut) {
+	if (typeof fadeOut != 'boolean')
+		fadeOut = false;
 	if (fastForward) {
-		board.size = bestBoardSize;
+		board.setSize(bestBoardSize);
 		board.position = { x: bestBoardPosition.x, y: bestBoardPosition.y };
 		board.highlightOpacity = 0;
 		if (fadeOut)
-			board.opacity = 0;
+			board.setOpacity(0);
 	}
 	else {
 		board.sizeAnimation = {
@@ -185,9 +191,9 @@ function animateBestBoard(board, fadeOut = false) {
 			delay: 0
 		};
 		board.positionAnimation = {
-			startX: board.x,
+			startX: board.position.x,
 			endX: bestBoardPosition.x,
-			startY: board.y,
+			startY: board.position.y,
 			endY: bestBoardPosition.y,
 			length: timeToFrames(0.5),
 			progress: 0,
@@ -216,15 +222,15 @@ function hidePreviousBoard() {
 	if (previousBoard == null)
 		return;
 
-	previousBoard.opacity = 0;
+	previousBoard.setOpacity(0);
 }
 
 function animateCurrentBoard() {
-	currentBoard.size = bestBoardSize;
+	currentBoard.setSize(bestBoardSize);
 	currentBoard.position = { x: bestBoardPosition.x, y: bestBoardPosition.y };
-	currentBoard.opacity = 0;
+	currentBoard.setOpacity(0);
 	if (fastForward) {
-		currentBoard.opacity = 1;
+		currentBoard.setOpacity(1);
 	}
 	else {
 		currentBoard.opacityAnimation = {
@@ -244,22 +250,22 @@ function findTwoBestBoards() {
 
 	// Count best fitness repetition
 	bestFitness = boards[0].fitness;
-	boards.forEach(b => {
+	boards.forEach(function (b) {
 		if (b.fitness > bestFitness)
 			bestFitness = b.fitness;
 	});
-	boards.forEach(b => {
+	boards.forEach(function (b) {
 		if (b.fitness == bestFitness)
 			bestCount++;
 	});
 
 	// Count second best fitness repetition
 	secondBestFitness = 0;
-	boards.forEach(b => {
+	boards.forEach(function (b) {
 		if (b.fitness < bestFitness && b.fitness > secondBestFitness)
 			secondBestFitness = b.fitness;
 	});
-	boards.forEach(b => {
+	boards.forEach(function (b) {
 		if (b.fitness == secondBestFitness)
 			secondBestCount++;
 	});

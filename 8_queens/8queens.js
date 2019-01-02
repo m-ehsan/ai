@@ -74,7 +74,9 @@ function displayObjects() {
 
 	// Draw boards
 	if (!fastForward) {
-		boards.forEach(b => { b.display(); });
+		boards.forEach(function (b) {
+			b.display()
+		});
 	}
 	if (currentBoard != null) {
 		currentBoard.display();
@@ -91,7 +93,9 @@ function displayObjects() {
 }
 
 function finishAllAnimations() {
-	boards.forEach(b => { b.finishAnimation(); });
+	boards.forEach(function (b) {
+		b.finishAnimation()
+	});
 	if (currentBoard != null) {
 		currentBoard.finishAnimation();
 	}

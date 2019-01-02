@@ -2,6 +2,7 @@ function displayUI() {
     noStroke();
     textSize(30);
     textStyle(BOLD);
+    textAlign(LEFT, CENTER);
     fill(color(20, 114, 55));
     text("Generation: " + population.generation, 120, 150);
     textSize(22);
@@ -13,7 +14,7 @@ function displayUI() {
     text("[L] Load trained AI", 10, height - 90);
     text("[S] Show all dots: " + ((showAllDots) ? "true" : "false"), 10, height - 75);
     text("[+/-] Cycles per frame: " + cyclesPerFrame, 10, height - 60);
-    text("[F] Fast-forward generations: " + ((fastForward) ? "true" : "false"), 10, height - 45);
+    text("[F] Fast-forward generations: " + ((fastForward) ? "On" : "Off"), 10, height - 45);
     text("[Up/Down] Mutation rate: " + nf(mutationRate, 0, 3), 10, height - 30);
     text("[Left/Right] Population: " + populationSize, 10, height - 15);
 }

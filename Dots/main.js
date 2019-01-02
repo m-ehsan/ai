@@ -10,7 +10,7 @@ var showAllDots = true;
 
 // dots
 var population;
-var populationSize = 2000; // number of dots
+var populationSize = 1000; // number of dots
 var instructionsCount = 1000; // length of instruction series
 var mutationRate = 0.01;
 var dotRadius = 6;
@@ -122,7 +122,7 @@ function keyPressed() {
 }
 
 function drawObstacles() {
-    obstacles.forEach(o => {
+    obstacles.forEach(function (o) {
         noStroke();
         fill(color(198, 53, 53));
         rect(o.x, o.y, o.width, o.height);
@@ -140,7 +140,7 @@ function DownloadBestBrainJson() {
 
 function loadBrain(brainJson) {
     population = new Population(populationSize);
-    let brain = Brain.deserialize(brainJson);
+    let brain = Brain.prototype.deserialize(brainJson);
     population.loadBrain(brain);
 }
 

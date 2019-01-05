@@ -148,11 +148,11 @@ function updateBoards() {
 	calculateSmallBoardSize(boards.length);
 	calculateBoardsPositions();
 	for (let i = 0; i < boards.length; i++) {
-		boards[i].size = smallBoardSize;
+		boards[i].setSize(smallBoardSize);
 		boards[i].position = calculatePosition(i);
 	}
 	if (currentBoard != null) {
-		currentBoard.size = bestBoardSize;
+		currentBoard.setSize(bestBoardSize);
 		currentBoard.position = bestBoardPosition;
 	}
 }
